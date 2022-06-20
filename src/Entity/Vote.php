@@ -22,7 +22,7 @@ class Vote
     #[ORM\ManyToOne(targetEntity: Comment::class, inversedBy: 'votes')]
     private $comment;
 
-    #[ORM\Column(type: 'string', length: 100)]
+    #[ORM\Column(type: 'integer')]
     private $type;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'votes')]
@@ -31,6 +31,11 @@ class Vote
 
     #[ORM\Column(type: 'boolean')]
     private $active;
+
+    public function __construct(){
+        $this->setCreatedAt(new \DateTimeImmutable('NOW'));
+        $this->setActive(true);
+    }
 
     public function getId(): ?int
     {
@@ -73,12 +78,12 @@ class Vote
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): ?int
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(int $type): self
     {
         $this->type = $type;
 

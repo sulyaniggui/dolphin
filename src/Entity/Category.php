@@ -26,6 +26,7 @@ class Category
 
     public function __construct()
     {
+        $this->setCreatedAt(new \DateTimeImmutable('NOW'));
         $this->tickets = new ArrayCollection();
     }
 

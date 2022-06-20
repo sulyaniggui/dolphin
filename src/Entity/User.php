@@ -37,9 +37,6 @@ class User
     #[ORM\Column(type: 'string', length: 20)]
     private $number;
 
-    #[ORM\Column(type: 'string', length: 100)]
-    private $pseudo;
-
     #[ORM\Column(type: 'string', length: 255)]
     private $password;
 
@@ -63,6 +60,9 @@ class User
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Vote::class, orphanRemoval: true)]
     private $votes;
+
+    #[ORM\Column(type: 'string', length: 100)]
+    private $username;
 
     public function __construct(){
         $this->setCreatedAt(new \DateTimeImmutable('NOW'));
@@ -155,18 +155,6 @@ class User
     public function setNumber(string $number): self
     {
         $this->number = $number;
-
-        return $this;
-    }
-
-    public function getPseudo(): ?string
-    {
-        return $this->pseudo;
-    }
-
-    public function setPseudo(string $pseudo): self
-    {
-        $this->pseudo = $pseudo;
 
         return $this;
     }
@@ -299,6 +287,18 @@ class User
                 $vote->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
 
         return $this;
     }

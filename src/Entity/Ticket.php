@@ -53,6 +53,9 @@ class Ticket
         $this->comments = new ArrayCollection();
         $this->report = new ArrayCollection();
         $this->votes = new ArrayCollection();
+        $this->setCreatedAt(new \DateTimeImmutable('NOW'));
+        $this->setUpdatedAt(new \DateTime('NOW'));
+        $this->setActive(true);
     }
 
     public function getId(): ?int

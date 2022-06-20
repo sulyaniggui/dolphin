@@ -25,6 +25,11 @@ class Report
     #[ORM\Column(type: 'boolean')]
     private $active;
 
+    public function __construct(){
+        $this->setCreatedAt(new \DateTimeImmutable('NOW'));
+        $this->setActive(true);
+    }
+
     public function getId(): ?int
     {
         return $this->id;
