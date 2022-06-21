@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Doplhin - Account{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h1>Retrouvez ici tous vos tickets</h1>
+    {% for ticket in tickets %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                {% if ticket.isEnable == FALSE %}
+                    <p class="card-title btn btn-info">Ticket cloturé</p>
+                {% else %}
+                    <p class="card-title btn btn-info">Ticket ouvert</p>
+                {% endif %}
+
+                <p class="card-text">{{ ticket.title }}</p>
+                <p class="card-text">{{ ticket.description }}}</p>
+                <div class="d-flex p-2 justify-content-between align-items-center">
+                    <p class="card-text">{{ ticket.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
+                    <div class="d-flex p-2 justify-content-between">
+                        <p class="card-text">{{ ticket.author.lastname }}</p>
+                        <p class="card-text">{{ ticket.author.firstname }}</p>
+                    </div>
+                </div>
+                {% if ticket.isEnable == TRUE %}
+                <a href="{{ path('user-account_close-ticket', {ticketId: ticket.id}) }}" class="btn btn-danger">Cloturer le ticket</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
