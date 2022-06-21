@@ -8,6 +8,78 @@
     {% block stylesheets %}{{ encore_entry_link_tags('app') }}{% endblock %}
 </head>
 <body>
+{% if app.user %}
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Dolphin</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('user-account_home') }}">Mes tickets</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tickets
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% for category in categories %}
+                                <li>
+                                    <a href="{{ path('ticket_filterByCategory', {categorySlug: category.slug}) }}" class="dropdown-item"> {{ category.title }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ path('user-account_settings') }}">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary" aria-current="page" href="{{ path('user-account_create-ticket') }}">Créer un ticket</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <span>{{ app.user.userIdentifier }}</span>
+                <a href="{{ path('authentication_logout') }}" class="btn btn-primary rounded-1">Se déconnecter</a>
+            </div>
+        </div>
+    </nav>
+{% else %}
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ path('home') }}">Dolphin</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tickets
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        {% for category in categories %}
+                            <li>
+                                <a href="{{ path('ticket_filterByCategory', {categorySlug: category.slug}) }}" class="dropdown-item"> {{ category.title }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <a href="{{ path('authentication_register') }}" class="btn btn-outline-primary rounded-1">S'inscrire</a>
+            <a href="{{ path('authentication_login') }}" class="btn btn-primary rounded-1">Se connecter</a>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
 {% block body %}{% endblock %}
 {% block javascripts %}{{ encore_entry_script_tags('app') }}{% endblock %}
 </body>

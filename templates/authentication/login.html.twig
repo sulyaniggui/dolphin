@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dolphin - Login{% endblock %}
+
+{% block body %}
+
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <div>
+        <h1>Login</h1>
+
+        <form action="{{ path('authentication_login') }}" method="post">
+            <label for="username">Pseudo</label>
+            <input id="username" type="text" name="_username" placeholder="Email" value="{{ last_username }}">
+
+            <label for="password">Mot de passe</label>
+            <input id="password" type="password"  name="_password" placeholder="Mot de passe">
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dolphin - Settings!{% endblock %}
+
+{% block body %}
+    <div class="example-wrapper">
+        <h1>Paramètres de vos informations {{ username }}</h1>
+        {{ form(form) }}
+        <form action="{{ path('user-account_close-account') }}" method="post">
+            <button class="btn btn-danger" type="submit">Cloturer mon compte</button>
+        </form>
+    </div>
+{% endblock %}

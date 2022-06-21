@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dolphin{% endblock %}
+{% block body %}
+    <div>
+        <p>{{ ticket.title }}</p>
+        <p>{{ ticket.description }}</p>
+        <div class="d-flex">
+            <p>{{ ticket.author.lastname }}</p>
+            <p>{{ ticket.author.firstname }}</p>
+        </div>
+        <p>{{ ticket.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
+    </div>
+
+    <div>
+        {% for comment in comments %}
+            <p>{{ comment.content }}</p>
+            <div>
+                <div>
+                    <p>{{ comment.author.lastname }}</p>
+                    <p>{{ comment.author.firstname }}</p>
+                </div>
+                <p>{{ comment.createdAt | date("m/d/Y", "Europe/Paris")  }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if app.user %}
+    {{ form(form) }}
+    {% endif %}
+
+{% endblock %}
