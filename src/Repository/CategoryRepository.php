@@ -39,6 +39,19 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
+    public function findBySlug(string $value): array
+        {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.slug = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
 //    /**
 //     * @return Category[] Returns an array of Category objects
 //     */

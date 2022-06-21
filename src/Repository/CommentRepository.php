@@ -39,6 +39,18 @@ class CommentRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByTicket($value): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.ticket = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Comment[] Returns an array of Comment objects
 //     */

@@ -39,6 +39,32 @@ class TicketRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByCategory($value): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.active = true')
+            ->andWhere('t.category = :val')
+            ->setParameter('val', $value)
+            ->orderBy('t.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+       ;
+    }
+
+    public function findByUserLogged($value): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.author = :val')
+            ->setParameter('val', $value)
+            ->orderBy('t.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
 //    /**
 //     * @return Ticket[] Returns an array of Ticket objects
 //     */
