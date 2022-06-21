@@ -1,1 +1,10 @@
 @import '~bootstrap';
+@import './front/login.scss';
+@import './front/register.scss';
+a {
+  text-decoration: none;
+}
+
+button, input, label, a {
+  cursor: pointer;
+}
