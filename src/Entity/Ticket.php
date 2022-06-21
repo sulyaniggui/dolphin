@@ -48,6 +48,9 @@ class Ticket
     #[ORM\OneToMany(mappedBy: 'ticket', targetEntity: Vote::class)]
     private $votes;
 
+    #[ORM\Column(type: 'boolean')]
+    private $enable;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -56,6 +59,7 @@ class Ticket
         $this->setCreatedAt(new \DateTimeImmutable('NOW'));
         $this->setUpdatedAt(new \DateTime('NOW'));
         $this->setActive(true);
+        $this->setEnable(true);
     }
 
     public function getId(): ?int
@@ -245,6 +249,18 @@ class Ticket
                 $vote->setTicket(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isEnable(): ?bool
+    {
+        return $this->enable;
+    }
+
+    public function setEnable(bool $enable): self
+    {
+        $this->enable = $enable;
 
         return $this;
     }

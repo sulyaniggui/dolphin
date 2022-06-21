@@ -33,10 +33,15 @@ class Comment
     #[ORM\Column(type: 'boolean')]
     private $active;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $author;
+
     public function __construct()
     {
         $this->votes = new ArrayCollection();
         $this->setCreatedAt(new \DateTimeImmutable('NOW'));
+        $this->setUpdatedAt(new \DateTime('NOW'));
         $this->setActive(true);
     }
 
@@ -131,6 +136,18 @@ class Comment
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

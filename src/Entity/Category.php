@@ -24,6 +24,9 @@ class Category
     #[ORM\OneToMany(mappedBy: 'category', targetEntity: Ticket::class)]
     private $tickets;
 
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    private $slug;
+
     public function __construct()
     {
         $this->setCreatedAt(new \DateTimeImmutable('NOW'));
@@ -85,6 +88,18 @@ class Category
                 $ticket->setCategory(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
