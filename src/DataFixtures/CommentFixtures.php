@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Comment;
 use App\Entity\Ticket;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -35,9 +36,14 @@ class CommentFixtures extends Fixture implements DependentFixtureInterface
         /** @var Ticket $randomTicket */
         $randomTicket = $this->getReference('ticket-' . $randomTicketId);
 
+        $randomUserId = $this->faker->numberBetween('1', '9');
+        /** @var User $randomAuthor */
+        $randomAuthor = $this->getReference('user-' . $randomUserId);
+
         $comment = new Comment();
         $comment->setContent($this->faker->text('100'));
         $comment->setTicket($randomTicket);
+        $comment->setAuthor($randomAuthor);
         $comment->setUpdatedAt(new \DateTime('NOW'));
         $manager->persist($comment);
         $this->setReference('comment-' . $total++ , $comment);

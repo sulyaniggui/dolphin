@@ -8,12 +8,13 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class CategoryFixtures extends Fixture implements DependentFixtureInterface
 {
     private Generator $faker;
 
-    public function __construct(){
+    public function __construct(private SluggerInterface $slugger){
         $this->faker = Factory::create('fr_FR');
     }
 
@@ -29,8 +30,10 @@ class CategoryFixtures extends Fixture implements DependentFixtureInterface
     public function createCategory(ObjectManager $manager): Category
     {
         static $total = 0;
+        $title = $this->faker->sentence(3);
         $category = new Category();
-        $category->setTitle($this->faker->sentence(3));
+        $category->setTitle($title);
+        $category->setSlug($this->slugger->slug($title)->lower());
         $manager->persist($category);
         $this->setReference('category-' . $total++, $category);
 
