@@ -62,8 +62,16 @@ class CustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        $userRoles = $token->getRoleNames();
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
+        }
+
+        foreach ($userRoles as $role){
+            if ($role === 'ROLE_ADMIN'){
+                return new RedirectResponse($this->urlGenerator->generate('admin-account_home'));
+            }
         }
 
         return new RedirectResponse($this->urlGenerator->generate('home'));
