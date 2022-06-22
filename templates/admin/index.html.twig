@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dolphin - Admin{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+    <h1>Liste des utilisateurs de Dolphin</h1>
+    <div>
+        {% for user in users %}
+            <div class="d-flex align-items-center justify-content-between mt-2">
+                {{ user.username }}
+                {{ user.lastname }}
+                {{ user.firstname }}
+              <a href="{{ path('admin-account_user-show', { userId: user.id }) }}" class="btn btn-primary">Voir plus</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
