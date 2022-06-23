@@ -3,60 +3,122 @@
 {% block title %}Dolphin - Admin{% endblock %}
 
 {% block body %}
-  
-  <div>
-    <h1>Compte de {{ user.username }}</h1>
-    <div>
-      <h3>Action sur le compte</h3>
-      <a href="#!" class="btn btn-success">Re-activer le compte</a>
-      <a href="#!" class="btn btn-danger">Cloturer le compte</a>
-    </div>
-    
-    <div>
-      <div>
-        <h3>Informations complémentaires sur l'utilisateur</h3>
-        <p>Nom d'utilisateur : {{ user.username }}</p>
-        <p>Prénom : {{ user.firstname }}</p>
-        <p>Nom : {{ user.lastname }}</p>
-        <p>Addresse : {{ user.address }} {{ user.zipcode }} {{ user.city }}</p>
-        <p>Date de création de compte : {{ user.createdAt | date }}</p>
+  <section class="admin_userShow my-4 d-flex flex-column w-100 justify-content-center align-items-center">
+    <div class="d-flex flex-column align-items-center w-75">
+      <h2>Compte de {{ user.username }}</h2>
+      <div class="my-3">
+        {% if user.isActive == TRUE %}
+          <a href="{{ path('admin-account_user-closeAccount', { userId: user.id }) }}" class="btn btn-outline-danger">Bloquer le compte</a>
+        {% else %}
+          <a href="{{ path('admin-account_user-openAccount', { userId: user.id }) }}" class="btn btn-outline-success">Re-activer le compte</a>
+        {% endif %}
       </div>
-  
-      <div>
-        <h3>Tickets de l'utilisateur</h3>
-        <div class="d-flex">
-          {% for ticket in tickets %}
-            <div class="card mx-lg-2" style="width: 18rem;">
-              <div class="card-body">
-                {% if ticket.isEnable == FALSE %}
-                  <p class="card-title btn btn-info">Ticket cloturé</p>
-                {% else %}
-                  <p class="card-title btn btn-info">Ticket ouvert</p>
-                {% endif %}
-                <p class="card-text">{{ ticket.title }}</p>
-                <p class="card-text">{{ ticket.description }}}</p>
-                <div class="d-flex p-2 justify-content-between align-items-center">
-                  <p class="card-text">{{ ticket.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
-                  <div class="d-flex p-2 justify-content-between">
-                    <p class="card-text">{{ ticket.author.lastname }}</p>
-                    <p class="card-text">{{ ticket.author.firstname }}</p>
+
+      <div class="my-4 bg-info bg-opacity-10 p-5 w-100 rounded">
+          <h3>Informations complémentaires</h3>
+          <p>Nom d'utilisateur : {{ user.username }}</p>
+          <p>Prénom : {{ user.firstname }}</p>
+          <p>Nom : {{ user.lastname }}</p>
+          <p>Addresse : {{ user.address }} {{ user.zipcode }} {{ user.city }}</p>
+          <p>Date de création de compte : {{ user.createdAt | date }}</p>
+        </div>
+
+      <div class="w-100">
+          <h3>Tickets actifs de l'utilisateur </h3>
+          <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start">
+            {% for ticket in tickets %}
+              <div class="card mx-md-2 my-md-0 my-2" style="width: 20rem;">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center my-lg-2">
+                    {% if ticket.isEnable == FALSE %}
+                      <p class="card-title btn bg-info bg-opacity-10">Ticket cloturé</p>
+                    {% else %}
+                      <p class="card-title btn bg-info bg-opacity-10">Ticket ouvert</p>
+                    {% endif %}
+                    {% if app.user.roles == ['ROLE_USER','ROLE_ADMIN'] %}
+                      <a href="{{ path('admin-account_user-deleteTicket', { ticketId: ticket.id}) }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="red" class="bi bi-trash" viewBox="0 0 16 16">
+                          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                          <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                      </a>
+                    {% endif %}
+                  </div>
+                  <div class="my-lg-2">
+                    <p class="card-text">{{ ticket.title }}</p>
+                    <p class="card-text">{{ ticket.description }}}</p>
+                  </div>
+                  <div class="d-flex p-2 justify-content-between align-items-center">
+                    <p class="card-text">{{ ticket.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
+                    <div class="d-flex p-2 justify-content-between">
+                      <p class="card-text mx-lg-2">{{ ticket.author.lastname }}</p>
+                      <p class="card-text">{{ ticket.author.firstname }}</p>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    {% if ticket.isEnable == TRUE %}
+                      <a href="{{ path('ticket_show', { ticketId: ticket.id }) }}" class="btn btn-success">Voir le ticket</a>
+                    {% endif %}
+                    {% if ticket.author == app.user %}
+                      {% if ticket.isEnable == TRUE %}
+                        <a href="{{ path('user-account_close-ticket', {ticketId: ticket.id}) }}" class="btn btn-danger">Cloturer</a>
+                      {% endif %}
+                    {% endif %}
                   </div>
                 </div>
-                <div class="d-flex justify-content-between">
-                  {% if ticket.isEnable == TRUE %}
-                    <a href="{{ path('ticket_show', { ticketId: ticket.id }) }}" class="btn btn-success">Voir le ticket</a>
-                  {% endif %}
-                  {% if ticket.author == app.user %}
-                    {% if ticket.isEnable == TRUE %}
-                      <a href="{{ path('user-account_close-ticket', {ticketId: ticket.id}) }}" class="btn btn-danger">Cloturer</a>
-                    {% endif %}
-                  {% endif %}
-                </div>
               </div>
-            </div>
-          {% endfor %}
+            {% endfor %}
+          </div>
         </div>
-      </div>
+
+      <div class="w-100 my-5">
+            <h3>Tickets inactifs de l'utilisateur </h3>
+            <div class="d-flex flex-column flex-md-row align-items-center align-items-md-start">
+                {% for ticketInactive in ticketsInactive %}
+                    <div class="card mx-md-2 my-md-0 my-2" style="width: 20rem;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center my-lg-2">
+                                {% if ticketInactive.isEnable == FALSE %}
+                                    <p class="card-title btn bg-info bg-opacity-10">Ticket cloturé</p>
+                                {% else %}
+                                    <p class="card-title btn bg-info bg-opacity-10">Ticket ouvert</p>
+                                {% endif %}
+                                {% if app.user.roles == ['ROLE_USER','ROLE_ADMIN'] %}
+                                    <a href="{{ path('admin-account_user-restoreTicket', { ticketId: ticketInactive.id}) }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="green" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                            <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                        </svg>
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="my-lg-2">
+                                <p class="card-text">{{ ticketInactive.title }}</p>
+                                <p class="card-text">{{ ticketInactive.description }}}</p>
+                            </div>
+                            <div class="d-flex p-2 justify-content-between align-items-center">
+                                <p class="card-text">{{ ticketInactive.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
+                                <div class="d-flex p-2 justify-content-between">
+                                    <p class="card-text mx-lg-2">{{ ticketInactive.author.lastname }}</p>
+                                    <p class="card-text">{{ ticketInactive.author.firstname }}</p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                {% if ticketInactive.isEnable == TRUE %}
+                                    <a href="{{ path('ticket_show', { ticketId: ticketInactive.id }) }}" class="btn btn-success">Voir le ticket</a>
+                                {% endif %}
+                                {% if ticketInactive.author == app.user %}
+                                    {% if ticketInactive.isEnable == TRUE %}
+                                        <a href="{{ path('user-account_close-ticket', {ticketId: ticketInactive.id}) }}" class="btn btn-danger">Cloturer</a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
     </div>
-  </div>
+  </section>
 {% endblock %}

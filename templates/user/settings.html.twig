@@ -3,11 +3,13 @@
 {% block title %}Dolphin - Settings!{% endblock %}
 
 {% block body %}
-    <div class="example-wrapper">
-        <h1>Paramètres de vos informations {{ username }}</h1>
-        {{ form(form) }}
+    <div class="d-flex flex-column align-items-center my-4 mx-4">
+        <h1 class="text-center">Paramètres de vos informations {{ username }}</h1>
         <form action="{{ path('user-account_close-account') }}" method="post">
-            <button class="btn btn-danger" type="submit">Cloturer mon compte</button>
+            <button class="btn btn-outline-danger my-4" type="submit">Cloturer mon compte</button>
         </form>
+        <div class="w-75">
+            {{ form(form) }}
+        </div>
     </div>
 {% endblock %}

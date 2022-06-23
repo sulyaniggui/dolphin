@@ -1,10 +1,17 @@
 @import '~bootstrap';
 @import './front/login.scss';
 @import './front/register.scss';
+
 a {
   text-decoration: none;
 }
 
 button, input, label, a {
   cursor: pointer;
+}
+
+@include media-breakpoint-up(md) {
+  .card_homeFront{
+    width: 48%
+  }
 }

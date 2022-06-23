@@ -2,36 +2,42 @@
 
 {% block title %}Dolphin{% endblock %}
 {% block body %}
-    <div class="d-flex justify-content-between">
+    <div class="d-flex flex-column flex-md-row align-items-center">
         {% for ticket in tickets %}
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    {% if ticket.isEnable == FALSE %}
-                        <p class="card-title btn btn-info">Ticket cloturé</p>
-                    {% else %}
-                        <p class="card-title btn btn-info">Ticket ouvert</p>
-                    {% endif %}
-                    <p class="card-text">{{ ticket.title }}</p>
-                    <p class="card-text">{{ ticket.description }}}</p>
-                    <div class="d-flex p-2 justify-content-between align-items-center">
-                        <p class="card-text">{{ ticket.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
-                        <div class="d-flex p-2 justify-content-between">
-                            <p class="card-text">{{ ticket.author.lastname }}</p>
-                            <p class="card-text">{{ ticket.author.firstname }}</p>
+            {% if ticket.isActive == TRUE %}
+                <div class="card bg-light bg-opacity-10 border-2 mx-md-2 my-3" style="width: 20rem;">
+                    <div class="card-body">
+
+                        <div>
+                            {% if ticket.isEnable == FALSE %}
+                                <p class="card-title btn bg-light bg-opacity-30">Ticket cloturé</p>
+                            {% else %}
+                                <p class="card-title btn bg-light bg-opacity-30">Ticket ouvert</p>
+                            {% endif %}
+                        </div>
+
+
+                        <p class="card-text">{{ ticket.title }}</p>
+
+                        <p class="card-text">{{ ticket.description }}}</p>
+                        <div class="d-flex p-2 justify-content-between align-items-center">
+                            <p class="card-text">{{ ticket.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
+                            <div class="d-flex p-2 justify-content-between">
+                                <p class="card-text mx-2">{{ ticket.author.lastname }}</p>
+                                <p class="card-text">{{ ticket.author.firstname }}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                                <a href="{{ path('ticket_show', { ticketId: ticket.id }) }}" class="btn btn-success">Voir le ticket</a>
+                            {% if ticket.author == app.user %}
+                                {% if ticket.isEnable == TRUE %}
+                                <a href="{{ path('user-account_close-ticket', {ticketId: ticket.id}) }}" class="btn btn-danger">Clôturer le ticket</a>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        {% if ticket.isEnable == TRUE %}
-                            <a href="{{ path('ticket_show', { ticketId: ticket.id }) }}" class="btn btn-success">Voir le ticket</a>
-                        {% endif %}
-                        {% if ticket.author == app.user %}
-                            {% if ticket.isEnable == TRUE %}
-                            <a href="{{ path('user-account_close-ticket', {ticketId: ticket.id}) }}" class="btn btn-danger">Cloturer</a>
-                            {% endif %}
-                        {% endif %}
-                    </div>
                 </div>
-            </div>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

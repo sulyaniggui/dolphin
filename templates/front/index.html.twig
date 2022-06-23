@@ -2,4 +2,39 @@
 
 {% block title %}Dolphin{% endblock %}
 {% block body %}
+    <section class="d-flex flex-column align-items-center justify-content-center mx-4 mx-md-0">
+        <h1 class="text-center my-5">Bienvenue sur Dolphin !</h1>
+        <div class="w-100 d-flex align-items-center flex-column">
+            <p class="w-50">L'infinité de question représente un océan de connaissance qui vous tend les bras. Sur Dolphin nous pensons que la connaissance des uns et profitable pour augmenter la connaissance des autres</p>
+            <p class="w-50">Nous avons donc décidé de mettre cette plateforme en place pour que vous puissiez échanger sur de nombreuse catégories de sujet</p>
+        </div>
+
+        <div class="my-5 w-50">
+            <h3>Voici un aperçu de nos derniers tickets sur Dolphin</h3>
+            <div class="d-flex flex-column flex-md-row flex-wrap justify-content-md-between">
+                {% for ticket in  fiveLastTicket %}
+                    <div class="card_homeFront bg-info bg-opacity-10 p-3 my-3 mx-0 rounded">
+                        <p class="fst-bla fs-5">{{ ticket.title }}</p>
+                        <p>{{ ticket.description }}</p>
+                        <p>{{ ticket.createdAt | date }}</p>
+                        <div class="d-flex flex-column align-items-end">
+                            <a href="{{ path('ticket_show', {ticketId: ticket.id}) }}" class="btn btn-primary">Voir le ticket</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="my-5 w100 d-flex align-items-center flex-column">
+            <h3 class="text-center">Voici nos catégories sur Dolphin</h3>
+            <div class="d-flex flex-md-row flex-column justify-content-md-between flex-md-wrap w-50">
+                {% for category in categories %}
+                    <a href="{{ path('ticket_filterByCategory', {categorySlug: category.slug}) }}" class="bg-info bg-opacity-10 my-3 p-3">{{ category.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+
+    </section>
+
 {% endblock %}

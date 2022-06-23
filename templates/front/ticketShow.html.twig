@@ -2,31 +2,133 @@
 
 {% block title %}Dolphin{% endblock %}
 {% block body %}
-    <div>
-        <p>{{ ticket.title }}</p>
-        <p>{{ ticket.description }}</p>
-        <div class="d-flex">
-            <p>{{ ticket.author.lastname }}</p>
-            <p>{{ ticket.author.firstname }}</p>
+<section class="d-flex flex-column align-items-center justify-content-center">
+
+    <div class="card my-3 bg-info bg-opacity-10 w-75" >
+        <div class="card-body d-flex flex-column flex-md-row justify-content-between">
+            <div>
+                <h5 class="card-title">{{ ticket.title }}</h5>
+                <p class="card-text fs-5">{{ ticket.description }}.</p>
+                <div>
+
+                    <div class="d-flex">
+                        <p class="card-text fst-italic">{{ ticket.author.lastname }}</p>
+                        <p class="card-text mx-2 fst-italic">{{ ticket.author.firstname }}</p>
+                        <p class="fst-italic">{{ ticket.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
+                    </div>
+                </div>
+            </div>
+            {% if app.user == FALSE %}
+                <div class="d-flex flex-column flex-md-row">
+                    <span class="mx-lg-3">Number of upvote : {{ numberOfUpvoteTicket }}</span>
+                    <span>Number of downvote : {{ numberOfDownvoteTicket }}</span>
+                </div>
+            {% endif %}
+            {% if app.user %}
+            <div class="reactions d-flex flex-column justify-content-between align-items-md-end">
+
+                <div class="d-flex flex-column flex-md-row align-items-md-center align-items-start my-md-0 my-4">
+                    <div class="ticket_reactionState" hidden data-stateVote="{{ stateVoteTicket }}"></div>
+                    <span class="my-2 my-md-0 mx-md-2">Number of upvote : {{ numberOfUpvoteTicket }}</span>
+                    <a href="{{ path('user-account_create-upvote-ticket', { ticketId: ticket.id } ) }}" class="ticketUpvote btn btn-outline-success">Upvote</a>
+                    <span class="my-2 my-md-0 mx-md-2">Number of downvote : {{ numberOfDownvoteTicket }}</span>
+                    <a href="{{ path('user-account_create-downvote-ticket', { ticketId: ticket.id } ) }}" class="ticketDownvote btn btn-outline-danger">Downvote</a>
+                </div>
+
+                <!-- Button trigger modal -->
+                <div class="ticket_reportState" hidden data-stateReport="{{ stateReportTicket }}"></div>
+                <button type="button" class="ticket_reportButton btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#ticket-{{ ticket.id }}">Signaler</button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="ticket-{{ ticket.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Sujet du signalement</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="d-flex flex-column" action="{{ path('user-account_create-report-ticket', {ticketId: ticket.id}) }}" method="post">
+                                    <label class="my-lg-1" for="report">Écrivez la raison de votre signalement</label>
+                                    <input class="my-lg-1" id="report" type="text" name="reportSubject" placeholder="Raison de votre signalement...">
+                                    <button class="btn btn-success my-lg-3 w-25" type="submit">Envoyer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {% endif %}
         </div>
-        <p>{{ ticket.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
     </div>
 
-    <div>
+    <div class="my-md-2 w-75">
         {% for comment in comments %}
-            <p>{{ comment.content }}</p>
-            <div>
-                <div>
-                    <p>{{ comment.author.lastname }}</p>
-                    <p>{{ comment.author.firstname }}</p>
+            <div class="card my-3 bg-info bg-opacity-10 ">
+                <div class="card-body bg-light d-flex justify-content-between d-flex flex-column flex-md-row">
+                    <div>
+                        <p class="card-text fs-5">{{ comment.content }}.</p>
+                        <div>
+                            <div class="d-flex flex-row fst-italic">
+                                <p class="card-text fs-6">{{ comment.author.lastname }}</p>
+                                <p class="card-text mx-2 fst-italic">{{ comment.author.firstname }}</p>
+                                <p class="fst-italic">{{ comment.createdAt | date("m/d/Y", "Europe/Paris") }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if app.user == FALSE %}
+                        <div class="d-flex flex-column flex-md-row">
+                            <span class="mx-lg-3">Number of upvote : {{ comment.upvotes }}</span>
+                            <span>Number of downvote : {{ comment.downvotes }}</span>
+                        </div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="reactions d-flex flex-column justify-content-between align-items-md-end">
+                            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center my-md-0 my-4">
+                                <div class="comment_reactionState" hidden data-stateVoteComment="{{ comment.stateVoteComment }}"></div>
+                                <span class="my-2 my-md-0 mx-md-2">Number of upvote : {{ comment.upvotes }}</span>
+                                <a href="{{ path('user-account_create-upvote-comment', { commentId: comment.id } ) }}" class="commentUpvote btn btn-outline-success">Upvote</a>
+                                <span class="my-2 my-md-0 mx-md-2">Number of downvote : {{ comment.downvotes }}</span>
+                                <a href="{{ path('user-account_create-downvote-comment', { commentId: comment.id } ) }}" class="commentDownvote btn btn-outline-danger">Downvote</a>
+                            </div>
+
+                            <!-- Button trigger modal -->
+                            <div class="comment_reportState" hidden data-stateReportComment="{{ comment.stateReportComment }}"></div>
+                            <button type="button" class="comment_reportButton modalComment btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#comment-{{ comment.id }}">Signaler</button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="comment-{{ comment.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Sujet du signalement</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="d-flex flex-column" action="{{ path('user-account_create-report-comment', {commentId: comment.id}) }}" method="post">
+                                                <label class="my-lg-1" for="report">Écrivez la raison de votre signalement</label>
+                                                <input class="my-lg-1" id="report" type="text" name="reportSubject" placeholder="Raison de votre signalement...">
+                                                <button class="btn btn-success my-lg-3 w-25" type="submit">Envoyer</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
                 </div>
-                <p>{{ comment.createdAt | date("m/d/Y", "Europe/Paris")  }}</p>
             </div>
         {% endfor %}
     </div>
 
-    {% if app.user %}
-    {{ form(form) }}
+    {% if app.user and ticket.isEnable == TRUE %}
+        <div class="my-lg-2" style="width: 100rem">
+            {{ form(form) }}
+        </div>
     {% endif %}
-
+</section>
 {% endblock %}

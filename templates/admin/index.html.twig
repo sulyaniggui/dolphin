@@ -3,18 +3,38 @@
 {% block title %}Dolphin - Admin{% endblock %}
 
 {% block body %}
-
-<div class="example-wrapper">
-    <h1>Liste des utilisateurs de Dolphin</h1>
-    <div>
+    <section class="admin_home w-100 d-flex flex-column align-items-center justify-content-center">
+    <h1 class="my-3">Liste des utilisateurs</h1>
+    <div class="w-75">
         {% for user in users %}
-            <div class="d-flex align-items-center justify-content-between mt-2">
-                {{ user.username }}
-                {{ user.lastname }}
-                {{ user.firstname }}
-              <a href="{{ path('admin-account_user-show', { userId: user.id }) }}" class="btn btn-primary">Voir plus</a>
+            <div class="d-flex flex-column flex-md-row align-items-md-center align-items-start justify-content-start justify-content-md-between my-4 bg-light p-4 rounded bg-opacity-25">
+                <div class="d-flex flex-column flex-md-row">
+
+                    <div class="my-2 my-md-0">
+                        {% if user.isActive == true %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                <circle cx="8" cy="8" r="8"/>
+                            </svg>
+                        {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                <circle cx="8" cy="8" r="8"/>
+                            </svg>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row">
+                        <p class="mx-lg-2">{{ user.username }}</p>
+                        <div class="d-flex">
+                            <p class="mx-md-2">{{ user.lastname }}</p>
+                            <p class="mx-2">{{ user.firstname }}</p>
+                        </div>
+                        <p class="mx-md-5"> Date de création de compte : {{ user.createdAt | date }}</p>
+                    </div>
+
+                </div>
+                <a href="{{ path('admin-account_user-show', { userId: user.id }) }}" class="btn btn-primary">Voir plus</a>
             </div>
         {% endfor %}
     </div>
-</div>
+</section>
 {% endblock %}

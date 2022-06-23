@@ -8,19 +8,25 @@
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-    <div>
-        <h1>Login</h1>
+    <section class="d-flex flex-column align-items-center">
+        <div class="my-5 w-50">
+            <h1>Se connecter</h1>
+            <form action="{{ path('authentication_login') }}" method="post">
+                <div class="d-flex flex-column form-group my-lg-4">
+                    <label class="form-label" for="username">Pseudo</label>
+                    <input class="form-control" id="username" type="text" name="_username" placeholder="Email" value="{{ last_username }}">
+                    <small class="form-text text-muted">Ne partager pas votre pseudo</small>
+                </div>
 
-        <form action="{{ path('authentication_login') }}" method="post">
-            <label for="username">Pseudo</label>
-            <input id="username" type="text" name="_username" placeholder="Email" value="{{ last_username }}">
+                <div class="d-flex flex-column form-group my-lg-4">
+                    <label class="form-label" for="password">Mot de passe</label>
+                    <input class="form-control" id="password" type="password"  name="_password" placeholder="Mot de passe">
+                    <small class="form-text text-muted">Ne partager pas votre mot de passe</small>
+                </div>
 
-            <label for="password">Mot de passe</label>
-            <input id="password" type="password"  name="_password" placeholder="Mot de passe">
-
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-            <button type="submit">Se connecter</button>
-        </form>
-    </div>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <button type="submit" class="btn btn-primary me-md-auto">Se connecter</button>
+            </form>
+        </div>
+    </section>
 {% endblock %}
