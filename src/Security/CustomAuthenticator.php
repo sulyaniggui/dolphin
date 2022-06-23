@@ -74,7 +74,7 @@ class CustomAuthenticator extends AbstractLoginFormAuthenticator
             }
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('home'));
+        return new RedirectResponse($this->urlGenerator->generate('user-account_home'));
     }
 
     protected function getLoginUrl(Request $request): string
