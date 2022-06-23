@@ -25,6 +25,13 @@ class Report
     #[ORM\Column(type: 'boolean')]
     private $active;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'reports')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $author;
+
+    #[ORM\ManyToOne(targetEntity: Comment::class, inversedBy: 'reports')]
+    private $comment;
+
     public function __construct(){
         $this->setCreatedAt(new \DateTimeImmutable('NOW'));
         $this->setActive(true);
@@ -79,6 +86,30 @@ class Report
     public function setActive(bool $active): self
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    public function getComment(): ?Comment
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?Comment $comment): self
+    {
+        $this->comment = $comment;
 
         return $this;
     }

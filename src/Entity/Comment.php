@@ -37,12 +37,16 @@ class Comment
     #[ORM\JoinColumn(nullable: false)]
     private $author;
 
+    #[ORM\OneToMany(mappedBy: 'comment', targetEntity: Report::class)]
+    private $reports;
+
     public function __construct()
     {
         $this->votes = new ArrayCollection();
         $this->setCreatedAt(new \DateTimeImmutable('NOW'));
         $this->setUpdatedAt(new \DateTime('NOW'));
         $this->setActive(true);
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,6 +152,36 @@ class Comment
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports[] = $report;
+            $report->setComment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getComment() === $this) {
+                $report->setComment(null);
+            }
+        }
 
         return $this;
     }
