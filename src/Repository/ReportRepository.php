@@ -39,6 +39,36 @@ class ReportRepository extends ServiceEntityRepository
         }
     }
 
+        public function checkReportTicketExist($ticket, $user): array
+        {
+            return $this->createQueryBuilder('r')
+                ->andWhere('r.ticket = :ticket')
+                ->andWhere('r.author = :user')
+                ->setParameter('ticket', $ticket)
+                ->setParameter('user', $user)
+                ->orderBy('r.id', 'ASC')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
+    public function checkReportCommentExist($comment, $user): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.comment = :comment')
+            ->andWhere('r.author = :user')
+            ->setParameter('comment', $comment)
+            ->setParameter('user', $user)
+            ->orderBy('r.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+
+
 //    /**
 //     * @return Report[] Returns an array of Report objects
 //     */
