@@ -71,8 +71,8 @@ class VoteFixtures extends Fixture implements DependentFixtureInterface
             UserFixtures::class,
             CategoryFixtures::class,
             TicketFixtures::class,
+            CommentFixtures::class,
             ReportFixtures::class,
-            CommentFixtures::class
         ];
     }
 }

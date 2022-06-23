@@ -58,7 +58,6 @@ class CommentFixtures extends Fixture implements DependentFixtureInterface
             UserFixtures::class,
             CategoryFixtures::class,
             TicketFixtures::class,
-            ReportFixtures::class
         ];
     }
 }
