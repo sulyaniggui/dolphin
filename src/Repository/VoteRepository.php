@@ -39,6 +39,122 @@ class VoteRepository extends ServiceEntityRepository
         }
     }
 
+    public function checkUpvoteTicketExist($ticket, $user): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.type = 1')
+            ->andWhere('v.author = :user')
+            ->andWhere('v.ticket = :ticket')
+            ->setParameter('ticket', $ticket)
+            ->setParameter('user', $user)
+            ->orderBy('v.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function checkDownvoteTicketExist($ticket, $user): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.type = 0')
+            ->andWhere('v.author = :user')
+            ->andWhere('v.ticket = :ticket')
+            ->setParameter('ticket', $ticket)
+            ->setParameter('user', $user)
+            ->orderBy('v.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function checkUpvoteCommentExist($comment, $user): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.type = 1')
+            ->andWhere('v.author = :user')
+            ->andWhere('v.comment = :comment')
+            ->setParameter('comment', $comment)
+            ->setParameter('user', $user)
+            ->orderBy('v.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function checkDownvoteCommentExist($comment, $user): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.type = 0')
+            ->andWhere('v.author = :user')
+            ->andWhere('v.comment = :comment')
+            ->setParameter('comment', $comment)
+            ->setParameter('user', $user)
+            ->orderBy('v.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findByUpvoteTicket($value): array
+{
+    return $this->createQueryBuilder('v')
+        ->where('v.type = 1')
+        ->andWhere('v.active = true')
+        ->andWhere('v.ticket = :val')
+        ->setParameter('val', $value)
+        ->orderBy('v.id', 'ASC')
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult()
+    ;
+}
+
+    public function findByDownvoteTicket($value): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.type = 0')
+            ->andWhere('v.ticket = :val')
+            ->andWhere('v.active = true')
+            ->setParameter('val', $value)
+            ->orderBy('v.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findByUpvoteComment($value): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.type = 1')
+            ->andWhere('v.active = true')
+            ->andWhere('v.comment = :val')
+            ->setParameter('val', $value)
+            ->orderBy('v.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findByDownvoteComment($value): array
+    {
+        return $this->createQueryBuilder('v')
+            ->where('v.type = 0')
+            ->andWhere('v.comment = :val')
+            ->andWhere('v.active = true')
+            ->setParameter('val', $value)
+            ->orderBy('v.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    /**
 //     * @return Vote[] Returns an array of Vote objects
 //     */
