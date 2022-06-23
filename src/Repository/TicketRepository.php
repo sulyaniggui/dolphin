@@ -65,6 +65,42 @@ class TicketRepository extends ServiceEntityRepository
     }
 
 
+    public function findTicketActiveByUser($user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.active = true')
+            ->andWhere('t.author = :user')
+            ->setParameter('user', $user)
+            ->orderBy('t.id', 'ASC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findTicketNotActiveByUser($user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.active = false')
+            ->andWhere('t.author = :user')
+            ->setParameter('user', $user)
+            ->orderBy('t.id', 'ASC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findFiveLastTicket(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.created_at', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Ticket[] Returns an array of Ticket objects
 //     */
