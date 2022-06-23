@@ -3,10 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Report;
 use App\Entity\Ticket;
 use App\Entity\User;
+use App\Entity\Vote;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\TicketRepository;
+use App\Repository\VoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -201,5 +205,258 @@ class UserController extends AbstractController
             'form' => $form->createView(),
             'categories' => $categories
         ]);
+    }
+
+    #[Route('/createUpvote/ticket/{ticketId}', name: 'create-upvote-ticket')]
+    public function createUpvoteTicket(EntityManagerInterface $manager, string $ticketId, Request $request, TicketRepository $ticketRepository, VoteRepository $voteRepository): Response
+    {
+        $ticketId = intval($ticketId);
+        $ticket = $ticketRepository->find($ticketId);
+        $user = $this->getUser();
+        $upvoteExist = $voteRepository->checkUpvoteTicketExist($ticket, $user);
+        $downvoteExist = $voteRepository->checkDownvoteTicketExist($ticket, $user);
+
+        if ($downvoteExist){
+            $downvote = $downvoteExist[0];
+        }
+        if ($upvoteExist){
+            $upvote = $upvoteExist[0];
+        }
+
+        if ($downvoteExist && $upvoteExist){
+            if ($downvote->isActive() && $upvote->isActive() === FALSE){
+                $downvote->setActive(false);
+                $upvote->setActive(true);
+                $manager->persist($upvote);
+                $manager->persist($downvote);
+                $manager->flush();
+                return $this->redirect($request->headers->get('referer'));
+            }
+        }
+
+        if ($upvoteExist){
+            if ($upvote->isActive() === FALSE){
+                $upvote->setActive(true);
+                $manager->persist($upvote);
+                $manager->flush();
+                return $this->redirect($request->headers->get('referer'));
+            }
+            $upvote->setActive(false);
+            $manager->persist($upvote);
+            $manager->flush();
+            return $this->redirect($request->headers->get('referer'));
+        }
+        $vote = new Vote();
+        $vote->setType(1);
+        $vote->setTicket($ticket);
+        $vote->setAuthor($user);
+        if ($downvoteExist){
+            $downvote->setActive(false);
+            $manager->persist($downvote);
+        }
+        $manager->persist($vote);
+        $manager->flush();
+        return $this->redirect($request->headers->get('referer'));
+    }
+
+    #[Route('/createDownvote/ticket/{ticketId}', name: 'create-downvote-ticket')]
+    public function createDownvoteTicket(EntityManagerInterface $manager, string $ticketId, Request $request, TicketRepository $ticketRepository, VoteRepository $voteRepository): Response
+    {
+        $ticketId = intval($ticketId);
+        $ticket = $ticketRepository->find($ticketId);
+        $user = $this->getUser();
+
+
+        $upvoteExist = $voteRepository->checkUpvoteTicketExist($ticket, $user);
+        $downvoteExist = $voteRepository->checkDownvoteTicketExist($ticket, $user);
+
+        if ($downvoteExist){
+            $downvote = $downvoteExist[0];
+        }
+        if ($upvoteExist){
+            $upvote = $upvoteExist[0];
+        }
+
+        if ($downvoteExist && $upvoteExist){
+            if ($upvote->isActive() && $downvote->isActive() === FALSE){
+                $upvote->setActive(false);
+                $downvote->setActive(true);
+                $manager->persist($downvote);
+                $manager->persist($upvote);
+                $manager->flush();
+                return $this->redirect($request->headers->get('referer'));
+            }
+        }
+
+        if ($downvoteExist){
+            if ($downvote->isActive() === FALSE){
+                $downvote->setActive(true);
+                $manager->persist($downvote);
+                $manager->flush();
+                return $this->redirect($request->headers->get('referer'));
+            }
+            $downvote->setActive(false);
+            $manager->persist($downvote);
+            $manager->flush();
+            return $this->redirect($request->headers->get('referer'));
+        }
+        $vote = new Vote();
+        $vote->setType(0);
+        $vote->setTicket($ticket);
+        $vote->setAuthor($user);
+        if ($upvoteExist){
+            $upvote->setActive(false);
+            $manager->persist($upvote);
+        }
+        $manager->persist($vote);
+        $manager->flush();
+        return $this->redirect($request->headers->get('referer'));
+    }
+
+
+    #[Route('/createUpvote/comment/{commentId}', name: 'create-upvote-comment')]
+    public function createUpvoteComment(EntityManagerInterface $manager, string $commentId, Request $request, CommentRepository $commentRepository, VoteRepository $voteRepository): Response
+    {
+        $commentId = intval($commentId);
+        $comment = $commentRepository->find($commentId);
+        $user = $this->getUser();
+        $upvoteExist = $voteRepository->checkUpvoteCommentExist($comment, $user);
+        $downvoteExist = $voteRepository->checkDownvoteCommentExist($comment, $user);
+
+        if ($downvoteExist){
+            $downvote = $downvoteExist[0];
+        }
+        if ($upvoteExist){
+            $upvote = $upvoteExist[0];
+        }
+
+        if ($downvoteExist && $upvoteExist){
+            if ($downvote->isActive() && $upvote->isActive() === FALSE){
+                $downvote->setActive(false);
+                $upvote->setActive(true);
+                $manager->persist($upvote);
+                $manager->persist($downvote);
+                $manager->flush();
+                return $this->redirect($request->headers->get('referer'));
+            }
+        }
+
+        if ($upvoteExist){
+            if ($upvote->isActive() === FALSE){
+                $upvote->setActive(true);
+                $manager->persist($upvote);
+                $manager->flush();
+                return $this->redirect($request->headers->get('referer'));
+            }
+            $upvote->setActive(false);
+            $manager->persist($upvote);
+            $manager->flush();
+            return $this->redirect($request->headers->get('referer'));
+        }
+        $vote = new Vote();
+        $vote->setType(1);
+        $vote->setComment($comment);
+        $vote->setAuthor($user);
+        if ($downvoteExist){
+            $downvote->setActive(false);
+            $manager->persist($downvote);
+        }
+        $manager->persist($vote);
+        $manager->flush();
+        return $this->redirect($request->headers->get('referer'));
+    }
+
+    #[Route('/createDownvote/comment/{commentId}', name: 'create-downvote-comment')]
+    public function createDownvoteComment(EntityManagerInterface $manager, Request $request, CommentRepository $commentRepository, VoteRepository $voteRepository, string $commentId): Response
+    {
+        $commentId = intval($commentId);
+        $comment = $commentRepository->find($commentId);
+        $user = $this->getUser();
+
+
+        $upvoteExist = $voteRepository->checkUpvoteCommentExist($comment, $user);
+        $downvoteExist = $voteRepository->checkDownvoteCommentExist($comment, $user);
+
+        if ($downvoteExist){
+            $downvote = $downvoteExist[0];
+        }
+        if ($upvoteExist){
+            $upvote = $upvoteExist[0];
+        }
+
+        if ($downvoteExist && $upvoteExist){
+            if ($upvote->isActive() && $downvote->isActive() === FALSE){
+                $upvote->setActive(false);
+                $downvote->setActive(true);
+                $manager->persist($downvote);
+                $manager->persist($upvote);
+                $manager->flush();
+                return $this->redirect($request->headers->get('referer'));
+            }
+        }
+
+        if ($downvoteExist){
+            if ($downvote->isActive() === FALSE){
+                $downvote->setActive(true);
+                $manager->persist($downvote);
+                $manager->flush();
+                return $this->redirect($request->headers->get('referer'));
+            }
+            $downvote->setActive(false);
+            $manager->persist($downvote);
+            $manager->flush();
+            return $this->redirect($request->headers->get('referer'));
+        }
+        $vote = new Vote();
+        $vote->setType(0);
+        $vote->setComment($comment);
+        $vote->setAuthor($user);
+        if ($upvoteExist){
+            $upvote->setActive(false);
+            $manager->persist($upvote);
+        }
+        $manager->persist($vote);
+        $manager->flush();
+        return $this->redirect($request->headers->get('referer'));
+    }
+
+    #[Route('/createReport/ticket/{ticketId}', name: 'create-report-ticket')]
+    public function createReportTicket(EntityManagerInterface $manager, string $ticketId, Request $request, TicketRepository $ticketRepository): Response
+    {
+        $ticketId = intval($ticketId);
+        $ticket = $ticketRepository->find($ticketId);
+        $user = $this->getUser();
+
+        $reportSubject = $request->request->get('reportSubject');
+
+        $report = new Report();
+        $report->setActive(true);
+        $report->setTicket($ticket);
+        $report->setAuthor($user);
+        $report->setSubject($reportSubject);
+
+        $manager->persist($report);
+        $manager->flush();
+        return $this->redirect($request->headers->get('referer'));
+    }
+
+    #[Route('/createReport/comment/{commentId}', name: 'create-report-comment')]
+    public function createReportComment(EntityManagerInterface $manager, string $commentId, Request $request, CommentRepository $commentRepository): Response
+    {
+        $commentId = intval($commentId);
+        $comment = $commentRepository->find($commentId);
+        $user = $this->getUser();
+
+        $reportSubject = $request->request->get('reportSubject');
+
+        $report = new Report();
+        $report->setActive(true);
+        $report->setComment($comment);
+        $report->setAuthor($user);
+        $report->setSubject($reportSubject);
+
+        $manager->persist($report);
+        $manager->flush();
+        return $this->redirect($request->headers->get('referer'));
     }
 }
