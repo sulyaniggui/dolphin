@@ -28,6 +28,28 @@ class UserFixtures extends Fixture
         for($i = 1; $i <= $count; $i++){
             $this->createUser($manager);
         }
+
+        $preSetUser = new User();
+        $preSetUser->setUsername('david');
+        $preSetUser->setLastname('David');
+        $preSetUser->setFirstname('Pathiashvili');
+        $preSetUser->setAddress($this->faker->address());
+        $preSetUser->setZipcode($this->faker->postcode());
+        $preSetUser->setCity($this->faker->city());
+        $preSetUser->setEmail($this->faker->email());
+        $preSetUser->setNumber($this->faker->phoneNumber());
+        $passwordPreSetUser = '1234';
+        $hashedPasswordPreSetUser = $this->passwordHasher->hashPassword(
+            $preSetUser,
+            $passwordPreSetUser
+        );
+        $preSetUser->setPassword($hashedPasswordPreSetUser);
+        $preSetUser->setActive(True);
+        $preSetUser->setRoles(['ROLE_USER']);
+        $preSetUser->setSlug($this->faker->slug());
+        $preSetUser->setDescription($this->faker->text(100));
+        $manager->persist($preSetUser);
+
         $manager->flush();
     }
 
